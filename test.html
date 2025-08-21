@@ -1,0 +1,32 @@
+<!-- test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Stream Test</title>
+</head>
+<body>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:8081/ws/stream/stream_A?user_id=user123');
+        const messages = document.getElementById('messages');
+
+        ws.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            messages.innerHTML += '<div>' + JSON.stringify(message) + '</div>';
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = {
+                type: 'chat',
+                data: { text: input.value }
+            };
+            ws.send(JSON.stringify(message));
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
